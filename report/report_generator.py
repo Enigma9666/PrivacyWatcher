@@ -10,17 +10,10 @@ def generate_txt_report(results: dict, scan_path: str, filename: str):
     """
 
     # Aggiunta: salva sempre il report nella directory 'report'
-    #report_dir = os.path.join(os.getcwd(), "reports")
-    #filepath = os.path.join("reports", filename)
-    #os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    report_dir = os.path.join(os.getcwd(), "reports")
+    filepath = os.path.join("reports", filename)
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
     # Crea la cartella 'reports' dentro 'report' se non esiste
-   
-    # Percorso corretto alla cartella 'reports' dentro 'report'
-    reports_dir = os.path.join(os.path.dirname(__file__), 'reports')
-    os.makedirs(reports_dir, exist_ok=True)
-
-    # Percorso completo del file nella cartella 'reports'
-    filepath = os.path.join(reports_dir, filename)
 
 
 
