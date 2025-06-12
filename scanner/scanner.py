@@ -2,6 +2,8 @@ import os
 import sys
 from utils.patterns import patterns
 from utils.validator import validate_luhn
+from db.database import salva_scansione
+
 
 
 def scan_line_for_sensitive_data(line):
@@ -51,7 +53,7 @@ def scan_directory(directory):
     return report
 
 
-def print_report(results):
+"""def print_report(results):
     if not results:
         print("Nessun dato sensibile trovato.")
         return
@@ -61,7 +63,25 @@ def print_report(results):
         print(f"\n📄 File: {match['file']}")
         print(f"🔢 Riga: {match['line']}")
         print(f"🔍 Contenuto: {match['content']}")
-        print(f"   → {match['data_type']}: {match['match']}")
+        print(f"   → {match['data_type']}: {match['match']}")"""
+def scan_directory(directory):
+    report = []
+    for root, _, files in os.walk(directory):
+        for filename in files:
+            full_path = os.path.join(root, filename)
+            if os.path.isfile(full_path):
+                report.extend(scan_file(full_path))
+
+    if report:
+        # Stampa il report
+        print_report(report)
+        # Salva anche nel database
+        salva_scansione(directory, report)
+    else:
+        print("Nessun dato sensibile trovato.")
+
+    return report
+
 
 
 if __name__ == "__main__":
