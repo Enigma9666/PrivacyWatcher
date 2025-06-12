@@ -1,0 +1,7 @@
+Mario Rossi, email: mario.rossi@example.com
+Telefono: +39 347-1234567
+Codice fiscale: RSSMRA85M01H501Z
+Carta di credito: 4111 1111 1111 1111
+IBAN: IT60X0542811101000000123456
+password: segreta123
+pwd=superpass
