@@ -11,8 +11,8 @@ def generate_txt_report(results: dict, scan_path: str, filename: str):
 
     # Aggiunta: salva sempre il report nella directory 'report'
     report_dir = os.path.join(os.getcwd(), "report")
-    os.makedirs(report_dir, exist_ok=True)  # Crea la cartella se non esiste
-    filepath = os.path.join(report_dir, filename)
+    filepath = os.path.join("report", filename)
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(f"Report di scansione PrivacyWatcher\n")
