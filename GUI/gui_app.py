@@ -79,8 +79,9 @@ class PrivacyWatcherGUI:
             structured[dtype].append({"file": item['file'], "match": item['match']})
 
         timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
-        filename = f"report/Report_{timestamp}.txt"
-        generate_txt_report(structured, self.path.get(), filename)
+        filename = f"Report_{timestamp}.txt"
+        filepath = os.path.join("report", filename)
+        generate_txt_report(structured, self.path.get(), filepath)
         messagebox.showinfo("Report generato", f"Report salvato in {filename}")
 
 def launch_gui():
