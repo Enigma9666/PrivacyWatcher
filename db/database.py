@@ -22,6 +22,7 @@ DB_PATH = os.path.join("data", "logs.db")
         conn.commit()"""
 
 def inizializza_db():
+    os.makedirs("data", exist_ok=True)  # Assicurati di creare la cartella prima
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -37,6 +38,7 @@ def inizializza_db():
     """)
     conn.commit()
     conn.close()
+
 
 # Salva una scansione nel database
 def salva_scansione(path, risultati):
