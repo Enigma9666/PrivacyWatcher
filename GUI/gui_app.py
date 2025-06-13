@@ -17,27 +17,6 @@ class PrivacyWatcherGUI:
 
         self.create_widgets()
 
-    """def create_widgets(self):
-        # Selettore percorso
-        path_frame = tk.Frame(self.root)
-        path_frame.pack(fill='x', padx=10, pady=5)
-
-        tk.Entry(path_frame, textvariable=self.path, width=60).pack(side='left', padx=5)
-        tk.Button(path_frame, text="Sfoglia", command=self.browse_path).pack(side='left')
-
-        # Pulsante avvio scansione
-        tk.Button(self.root, text="Avvia scannerizzazione", command=self.run_scan, bg="#4CAF50", fg="white").pack(pady=10)
-
-        # Area di testo scrollabile per i risultati
-        self.text_area = scrolledtext.ScrolledText(self.root, wrap=tk.WORD, width=80, height=20)
-        self.text_area.pack(padx=10, pady=5)
-
-        # Pulsante per esportare il report
-        tk.Button(self.root, text="Esporta Report", command=self.export_report).pack(pady=5)
-
-        # Pulsante per visualizzare database dei report
-        tk.Button(self.root, text="Database", command=self.open_database_window).pack(pady=5)"""
-
     def create_widgets(self):
         # Frame per il percorso
         path_frame = tk.Frame(self.root)
