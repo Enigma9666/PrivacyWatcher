@@ -88,9 +88,10 @@ class PrivacyWatcherGUI:
         filepath = os.path.join("reports", filename)
         generate_txt_report(structured, self.path.get(), filepath)
         messagebox.showinfo("Report generato", f"Report salvato in {filename}")
-    """def open_database_window(self):
+    def open_database_window(self):
         records = recupera_report()  # List of tuples: (timestamp, report_name)
-
+        print("DEBUG: record dal DB =", records)
+        
         db_win = tk.Toplevel(self.root)
         db_win.title("Storico Report")
         db_win.geometry("600x400")
@@ -135,9 +136,9 @@ class PrivacyWatcherGUI:
                 else:
                     messagebox.showerror("Errore", "File non trovato.")
 
-        listbox.bind("<<ListboxSelect>>", show_report)"""
+        listbox.bind("<<ListboxSelect>>", show_report)
 
-def open_database_window(self):
+"""def open_database_window(self):
     records = recupera_report()  # [(timestamp, report_name), ...]
 
     db_window = tk.Toplevel(self.root)
@@ -180,7 +181,7 @@ def open_database_window(self):
         else:
             messagebox.showerror("Errore", f"Il file '{filename}' non esiste.")
 
-    listbox.bind("<Double-1>", open_selected_report)
+    listbox.bind("<Double-1>", open_selected_report)"""
 
 
 
