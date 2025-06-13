@@ -28,7 +28,7 @@ def inizializza_db():
 
 
 # Salva una scansione nel database
-def salva_scansione(path, risultati):
+"""def salva_scansione(path, risultati):
     inizializza_db()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     risultati_json = json.dumps(risultati, indent=2)
@@ -41,7 +41,29 @@ def salva_scansione(path, risultati):
         """, (timestamp, path, risultati_json))
         conn.commit()
 
-# Recupera tutte le scansioni salvate
+# Recupera tutte le scansioni salvate"""
+
+def salva_scansione(path, risultati, report_name):
+    inizializza_db()
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        for item in risultati:
+            cursor.execute("""
+                INSERT INTO scansioni (timestamp, report_name, directory, data_type, file_path, match)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                timestamp,
+                report_name,
+                path,
+                item.get("data_type", ""),
+                item.get("file", ""),
+                item.get("match", "")
+            ))
+        conn.commit()
+
+
 def leggi_scansioni():
     inizializza_db()
     with sqlite3.connect(DB_PATH) as conn:
