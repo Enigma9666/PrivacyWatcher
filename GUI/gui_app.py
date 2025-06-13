@@ -137,7 +137,7 @@ class PrivacyWatcherGUI:
 
         listbox.bind("<<ListboxSelect>>", show_report)"""
 
-    def open_database_window(self):
+def open_database_window(self):
     records = recupera_report()  # [(timestamp, report_name), ...]
 
     db_window = tk.Toplevel(self.root)
