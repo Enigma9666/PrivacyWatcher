@@ -7,7 +7,7 @@ from datetime import datetime
 DB_PATH = os.path.join("data", "logs.db")
 
 # Inizializza il database e crea la tabella se non esiste
-def init_db():
+"""def init_db():
     os.makedirs("data", exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
@@ -19,7 +19,24 @@ def init_db():
                 risultati TEXT NOT NULL
             )
         """)
+        conn.commit()"""
+
+    def inizializza_db():
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS scansioni (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT,
+                report_name TEXT,
+                directory TEXT,
+                data_type TEXT,
+                file_path TEXT,
+                match TEXT
+            )
+        """)
         conn.commit()
+        conn.close()
 
 # Salva una scansione nel database
 def salva_scansione(path, risultati):
