@@ -61,9 +61,12 @@ def leggi_scansioni():
         return cursor.fetchall()
 
 def recupera_report():
+    inizializza_db()
     conn = sqlite3.connect("data/logs.db")
     cursor = conn.cursor()
     cursor.execute("SELECT timestamp, report_name FROM scansioni ORDER BY timestamp DESC")
     records = cursor.fetchall()
     conn.close()
     return records
+
+inizializza_db()
