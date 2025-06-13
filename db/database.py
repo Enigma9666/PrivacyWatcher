@@ -6,20 +6,7 @@ from datetime import datetime
 # Percorso del database
 DB_PATH = os.path.join("data", "logs.db")
 
-# Inizializza il database e crea la tabella se non esiste
-"""def init_db():
-    os.makedirs("data", exist_ok=True)
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS scansioni (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT NOT NULL,
-                path TEXT NOT NULL,
-                risultati TEXT NOT NULL
-            )
-        """)
-        conn.commit()"""
+
 
 def inizializza_db():
     os.makedirs("data", exist_ok=True)  # Assicurati di creare la cartella prima
