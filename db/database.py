@@ -21,7 +21,7 @@ DB_PATH = os.path.join("data", "logs.db")
         """)
         conn.commit()"""
 
-def inizializza_db():
+def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
