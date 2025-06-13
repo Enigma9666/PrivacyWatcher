@@ -21,7 +21,7 @@ DB_PATH = os.path.join("data", "logs.db")
         """)
         conn.commit()"""
 
-def init_db():
+def inizializza_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -40,7 +40,7 @@ def init_db():
 
 # Salva una scansione nel database
 def salva_scansione(path, risultati):
-    init_db()
+    inizializza_db()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     risultati_json = json.dumps(risultati, indent=2)
 
@@ -54,7 +54,7 @@ def salva_scansione(path, risultati):
 
 # Recupera tutte le scansioni salvate
 def leggi_scansioni():
-    init_db()
+    inizializza_db()
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM scansioni ORDER BY timestamp DESC")
