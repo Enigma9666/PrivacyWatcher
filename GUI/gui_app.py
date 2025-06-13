@@ -88,7 +88,7 @@ class PrivacyWatcherGUI:
         filepath = os.path.join("reports", filename)
         generate_txt_report(structured, self.path.get(), filepath)
         messagebox.showinfo("Report generato", f"Report salvato in {filename}")
-        def open_database_window(self):
+    def open_database_window(self):
         records = recupera_report()  # List of tuples: (timestamp, report_name)
 
         db_win = tk.Toplevel(self.root)
