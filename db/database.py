@@ -21,22 +21,22 @@ DB_PATH = os.path.join("data", "logs.db")
         """)
         conn.commit()"""
 
-    def inizializza_db():
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS scansioni (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
-                report_name TEXT,
-                directory TEXT,
-                data_type TEXT,
-                file_path TEXT,
-                match TEXT
-            )
-        """)
-        conn.commit()
-        conn.close()
+def inizializza_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS scansioni (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT,
+            report_name TEXT,
+            directory TEXT,
+            data_type TEXT,
+            file_path TEXT,
+            match TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
 
 # Salva una scansione nel database
 def salva_scansione(path, risultati):
