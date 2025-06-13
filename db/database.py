@@ -80,4 +80,24 @@ def recupera_report():
     conn.close()
     return records
 
+def export_report(self):
+    if not self.results:
+        messagebox.showinfo("Nessun risultato", "Nessun dato da esportare.")
+        return
+
+    structured = {}
+    for item in self.results:
+        dtype = item['data_type']
+        if dtype not in structured:
+            structured[dtype] = []
+        structured[dtype].append({"file": item['file'], "match": item['match']})
+
+    timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
+    filename = f"Report_{timestamp}.txt"
+    filepath = os.path.join("reports", filename)
+    generate_txt_report(structured, self.path.get(), filepath)
+    salva_scansione(self.path.get(), self.results, filename)
+    messagebox.showinfo("Report generato", f"Report salvato in {filename}")
+
+
 inizializza_db()
