@@ -48,7 +48,7 @@ class PrivacyWatcherGUI:
 
         # Frame per i pulsanti
         button_frame = tk.Frame(self.root)
-         button_frame.pack(pady=10)
+        button_frame.pack(pady=10)
 
         tk.Button(button_frame, text="Avvia scannerizzazione", command=self.run_scan, bg="#4CAF50", fg="white").pack(side='left', padx=5)
         tk.Button(button_frame, text="Esporta Report", command=self.export_report).pack(side='left', padx=5)
