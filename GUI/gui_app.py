@@ -3,8 +3,8 @@ from tkinter import filedialog, messagebox, scrolledtext
 import os
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
+from db.database import salva_scansione, recupera_report, recupera_contenuto_report
 import datetime
-from db.database import recupera_report
 
 class PrivacyWatcherGUI:
     def __init__(self, root):
@@ -79,34 +79,45 @@ class PrivacyWatcherGUI:
         structured = {}
         for item in self.results:
             dtype = item['data_type']
-            if dtype not in structured:
-                structured[dtype] = []
-            structured[dtype].append({"file": item['file'], "match": item['match']})
+            structured.setdefault(dtype, []).append({
+                "file": item['file'],
+                "match": item['match']
+            })
 
         timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
         filename = f"Report_{timestamp}.txt"
         filepath = os.path.join("reports", filename)
+
         generate_txt_report(structured, self.path.get(), filepath)
+
+        # Salva anche nel database
+        salva_scansione(self.path.get(), self.results, filename)
+
         messagebox.showinfo("Report generato", f"Report salvato in {filename}")
+
     def open_database_window(self):
-        records = recupera_report()  # List of tuples: (timestamp, report_name)
-        print("DEBUG: record dal DB =", records)
-        
+        records = recupera_report()  # (timestamp, report_name)
+
         db_win = tk.Toplevel(self.root)
         db_win.title("Storico Report")
-        db_win.geometry("600x400")
+        db_win.geometry("700x500")
+
+        # ───── Cerca per nome o data
+        top_frame = tk.Frame(db_win)
+        top_frame.pack(fill="x", padx=10, pady=5)
 
         search_var = tk.StringVar()
-        search_entry = tk.Entry(db_win, textvariable=search_var)
-        search_entry.pack(pady=5, padx=10, fill='x')
+        tk.Label(top_frame, text="Cerca:").pack(side="left", padx=5)
+        search_entry = tk.Entry(top_frame, textvariable=search_var)
+        search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
-        listbox = tk.Listbox(db_win, width=80)
+        listbox = tk.Listbox(db_win, width=100, font=("Courier", 10))
         listbox.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         def populate_list(filter_text=""):
             listbox.delete(0, tk.END)
             for ts, name in records:
-                entry = f"{name} | {ts}"
+                entry = f"{name:<35} | {ts}"
                 if filter_text.lower() in entry.lower():
                     listbox.insert(tk.END, entry)
 
@@ -121,67 +132,29 @@ class PrivacyWatcherGUI:
             if selection:
                 idx = selection[0]
                 selected = listbox.get(idx)
-                filename = selected.split(" | ")[0]
-                full_path = os.path.join("report", "reports", filename)
-                if os.path.exists(full_path):
-                    with open(full_path, "r", encoding="utf-8") as f:
-                        content = f.read()
+                report_name = selected.split("|")[0].strip()
 
-                    view_win = tk.Toplevel(db_win)
-                    view_win.title(f"Visualizza - {filename}")
-                    text_area = tk.Text(view_win, wrap=tk.WORD)
-                    text_area.insert(tk.END, content)
-                    text_area.config(state=tk.DISABLED)
-                    text_area.pack(fill=tk.BOTH, expand=True)
-                else:
-                    messagebox.showerror("Errore", "File non trovato.")
+                results = recupera_contenuto_report(report_name)
+                if results is None:
+                    messagebox.showerror("Errore", "Report non trovato nel database.")
+                    return
+
+                view_win = tk.Toplevel(db_win)
+                view_win.title(f"Contenuto - {report_name}")
+                view_win.geometry("700x500")
+
+                text_area = scrolledtext.ScrolledText(view_win, wrap=tk.WORD)
+                text_area.pack(fill=tk.BOTH, expand=True)
+
+                for item in results:
+                    text_area.insert(tk.END, f"📄 File: {item['file']}\n")
+                    text_area.insert(tk.END, f"🔢 Riga: {item['line']}\n")
+                    text_area.insert(tk.END, f"🔍 Contenuto: {item['content']}\n")
+                    text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
+
+                text_area.config(state=tk.DISABLED)
 
         listbox.bind("<<ListboxSelect>>", show_report)
-
-"""def open_database_window(self):
-    records = recupera_report()  # [(timestamp, report_name), ...]
-
-    db_window = tk.Toplevel(self.root)
-    db_window.title("Database Report")
-    db_window.geometry("600x400")
-
-    search_var = tk.StringVar()
-
-    # Barra di ricerca
-    search_entry = tk.Entry(db_window, textvariable=search_var, width=50)
-    search_entry.pack(pady=5)
-
-    listbox = tk.Listbox(db_window, width=80)
-    listbox.pack(padx=10, pady=10, fill='both', expand=True)
-
-    # Popola inizialmente
-    for timestamp, report_name in records:
-        listbox.insert(tk.END, f"{report_name} ({timestamp})")
-
-    # Filtro dinamico
-    def filter_reports(*args):
-        query = search_var.get().lower()
-        listbox.delete(0, tk.END)
-        for timestamp, report_name in records:
-            if query in report_name.lower() or query in timestamp.lower():
-                listbox.insert(tk.END, f"{report_name} ({timestamp})")
-
-    search_var.trace_add('write', filter_reports)
-
-    # Azione al doppio click
-    def open_selected_report(event):
-        selection = listbox.curselection()
-        if not selection:
-            return
-        selected = listbox.get(selection[0])
-        filename = selected.split(" ")[0]
-        report_path = os.path.join("reports", filename)
-        if os.path.exists(report_path):
-            os.system(f"xdg-open '{report_path}'")  # Linux GUI
-        else:
-            messagebox.showerror("Errore", f"Il file '{filename}' non esiste.")
-
-    listbox.bind("<Double-1>", open_selected_report)"""
 
 
 
