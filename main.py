@@ -6,7 +6,6 @@ from report.report_generator import generate_txt_report
 
 # 👇 Import della GUI
 from GUI.gui_app import launch_gui
-from db.database import salva_scansione, recupera_report, recupera_contenuto_report
 
 def check_environment():
     if os.name != 'posix':
