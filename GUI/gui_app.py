@@ -126,10 +126,11 @@ class PrivacyWatcherGUI:
 
         def populate_list(filter_text=""):
             listbox.delete(0, tk.END)
-            for ts, name in records:
-                entry = f"{name:<35} | {ts}"
+            for ts, name, stato in records:
+                entry = f"{name:<35} | {ts} | {stato}"
                 if filter_text.lower() in entry.lower():
                     listbox.insert(tk.END, entry)
+
 
         populate_list()
 
