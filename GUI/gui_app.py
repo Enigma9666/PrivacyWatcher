@@ -71,6 +71,14 @@ class PrivacyWatcherGUI:
                 self.text_area.insert(tk.END, f"🔍 Contenuto: {item['content']}\n")
                 self.text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
 
+        # Salvataggio automatico della scansione nel database
+        import datetime
+        from db.database import salva_scansione
+
+        timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
+        report_name = f"Report_{timestamp}.txt"
+        salva_scansione(path, self.results, report_name, "Scannerizzato")
+
     def export_report(self):
         if not self.results:
             messagebox.showinfo("Nessun risultato", "Nessun dato da esportare.")
@@ -91,7 +99,9 @@ class PrivacyWatcherGUI:
         generate_txt_report(structured, self.path.get(), filepath)
 
         # Salva anche nel database
-        salva_scansione(self.path.get(), self.results, filename)
+        """salva_scansione(self.path.get(), self.results, filename)"""
+        salva_scansione(self.path.get(), self.results, filename, "Esportato")
+
 
         messagebox.showinfo("Report generato", f"Report salvato in {filename}")
 
