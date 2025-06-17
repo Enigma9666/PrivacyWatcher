@@ -168,7 +168,7 @@ class PrivacyWatcherGUI:
                 text_area.config(state=tk.DISABLED)
 
         listbox.bind("<<ListboxSelect>>", show_report)
-        filter_frame = ttk.Frame(window)
+        filter_frame = ttk.Frame(db_win)
         filter_frame.pack(fill=tk.X, padx=10, pady=5)
 
         ttk.Label(filter_frame, text="Data inizio:").pack(side=tk.LEFT, padx=(0,5))
