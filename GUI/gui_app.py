@@ -75,7 +75,7 @@ class PrivacyWatcherGUI:
 
         # Salvataggio automatico della scansione nel database
         import datetime
-        from db.database import salva_scansione
+        from db.database import 
 
         timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
         report_name = f"Report_{timestamp}.txt"
