@@ -18,7 +18,8 @@ def inizializza_db():
                 report_name TEXT,
                 directory TEXT,
                 risultati TEXT,
-                stato TEXT
+                stato TEXT,
+                percorso TEXT
             )
         """)
         # Se la colonna "stato" non esiste (DB già creato), la aggiunge
@@ -38,13 +39,13 @@ def salva_scansione(directory: str, risultati: list, report_name: str, stato: st
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO scansioni (timestamp, report_name, directory, risultati, stato)
+            INSERT INTO scansioni (timestamp, report_name, directory, risultati, stato, percorso)
             VALUES (?, ?, ?, ?, ?)
         """, (timestamp, report_name, directory, risultati_json, stato))
         conn.commit()
 
 def recupera_report():
-    """Restituisce lista di tuple: (timestamp, report_name, stato)"""
+    """Restituisce lista di tuple: (timestamp, report_name, stato, percorso)"""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("""
