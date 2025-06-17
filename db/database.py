@@ -7,6 +7,7 @@ from datetime import datetime
 DB_PATH = os.path.join("data", "logs.db")
 
 def inizializza_db():
+    """Crea il database e la tabella scansioni, se non esistono."""
     os.makedirs("data", exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
@@ -20,6 +21,11 @@ def inizializza_db():
                 stato TEXT
             )
         """)
+        # Se la colonna "stato" non esiste (DB già creato), la aggiunge
+        try:
+            cursor.execute("ALTER TABLE scansioni ADD COLUMN stato TEXT")
+        except sqlite3.OperationalError:
+            pass  # La colonna esiste già, ignora errore
         conn.commit()
 
 inizializza_db()
