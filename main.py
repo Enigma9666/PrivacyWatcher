@@ -56,29 +56,7 @@ def main():
         main_cli(sys.argv[1])
     else:
         print("Uso: python3 main.py <percorso_file> oppure python3 main.py --gui")
-def export_report(self):
-    if not self.results:
-        messagebox.showinfo("Nessun risultato", "Nessun dato da esportare.")
-        return
 
-    structured = {}
-    for item in self.results:
-        dtype = item['data_type']
-        structured.setdefault(dtype, []).append({
-            "file": item['file'],
-            "match": item['match']
-        })
-
-    timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
-    filename = f"Report_{timestamp}.txt"
-    filepath = os.path.join("reports", filename)
-
-    generate_txt_report(structured, self.path.get(), filepath)
-
-    # Salva anche nel database
-    salva_scansione(self.path.get(), self.results, filename)
-
-    messagebox.showinfo("Report generato", f"Report salvato in {filename}")
 
 if __name__ == "__main__":
     main()
