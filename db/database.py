@@ -49,7 +49,7 @@ def recupera_report():
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT timestamp, report_name, stato
+            SELECT timestamp, report_name, stato, percorso
             FROM scansioni
             ORDER BY timestamp DESC
         """)
