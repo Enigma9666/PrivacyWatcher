@@ -4,7 +4,8 @@ import os
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
 from db.database import salva_scansione, recupera_report, recupera_contenuto_report
-import datetime
+from datetime import datetime
+from tkcalendar import DateEntry
 
 class PrivacyWatcherGUI:
     def __init__(self, root):
@@ -166,6 +167,50 @@ class PrivacyWatcherGUI:
                 text_area.config(state=tk.DISABLED)
 
         listbox.bind("<<ListboxSelect>>", show_report)
+        filter_frame = ttk.Frame(window)
+        filter_frame.pack(fill=tk.X, padx=10, pady=5)
+
+        ttk.Label(filter_frame, text="Data inizio:").pack(side=tk.LEFT, padx=(0,5))
+        start_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
+        start_date.pack(side=tk.LEFT, padx=(0,15))
+
+        ttk.Label(filter_frame, text="Data fine:").pack(side=tk.LEFT, padx=(0,5))
+        end_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
+        end_date.pack(side=tk.LEFT, padx=(0,15))
+
+        def apply_date_filter():
+            # Prendo le date e converto in datetime
+            dt_start = datetime.strptime(start_date.get(), "%m/%d/%y")
+            dt_end = datetime.strptime(end_date.get(), "%m/%d/%y")
+            if dt_start > dt_end:
+                messagebox.showerror("Errore", "La data di inizio deve essere precedente alla data di fine.")
+                return
+        
+            # Filtro i record in base al range
+            filtered = []
+            for ts, name, stato in records:
+                # ts è stringa, converto in datetime
+                dt_record = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                if dt_start <= dt_record <= dt_end:
+                    filtered.append((ts, name, stato))
+        
+            populate_list(filtered)
+
+        filter_btn = ttk.Button(filter_frame, text="Applica filtro", command=apply_date_filter)
+        filter_btn.pack(side=tk.LEFT)
+
+        # --- modifica la funzione populate_list per accettare lista di record come argomento ---
+        def populate_list(filtered_records=None, filter_text=""):
+            listbox.delete(0, tk.END)
+            if filtered_records is None:
+                filtered_records = records
+            for ts, name, stato in filtered_records:
+                entry = f"{name:<35} | {ts} | {stato}"
+                if filter_text.lower() in entry.lower():
+                    listbox.insert(tk.END, entry)
+
+        populate_list()
+
 
 
 
