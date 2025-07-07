@@ -123,13 +123,14 @@ class PrivacyWatcherGUI:
         search_entry = tk.Entry(top_frame, textvariable=search_var)
         search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
-        listbox = tk.Listbox(db_win, width=100, font=("Courier", 10))
+        listbox = tk.Listbox(db_win, width=130, font=("Courier", 10))
         listbox.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         def populate_list(filter_text=""):
             listbox.delete(0, tk.END)
             for ts, name, stato in records:
-                entry = f"{name:<35} | {ts} | {stato}"
+                short_path = os.path.basename(path)
+                entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
                 if filter_text.lower() in entry.lower():
                     listbox.insert(tk.END, entry)
 
@@ -145,7 +146,7 @@ class PrivacyWatcherGUI:
             if selection:
                 idx = selection[0]
                 selected = listbox.get(idx)
-                report_name = selected.split("|")[0].strip()
+                report_name = selected.split("|")[1].strip()
 
                 results = recupera_contenuto_report(report_name)
                 if results is None:
