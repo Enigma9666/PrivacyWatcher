@@ -40,8 +40,8 @@ def salva_scansione(directory: str, risultati: list, report_name: str, stato: st
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO scansioni (timestamp, report_name, directory, risultati, stato, percorso)
-            VALUES (?, ?, ?, ?, ?)
-        """, (timestamp, report_name, directory, risultati_json, stato))
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (timestamp, report_name, directory, risultati_json, stato, directory))
         conn.commit()
 
 def recupera_report():
