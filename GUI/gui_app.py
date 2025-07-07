@@ -208,8 +208,8 @@ class PrivacyWatcherGUI:
             listbox.delete(0, tk.END)
             if filtered_records is None:
                 filtered_records = records
-            for ts, name, stato in filtered_records:
-                entry = f"{name:<35} | {ts} | {stato}"
+            for ts, name, stato, percorso in filtered_records:
+                entry = f"{percorso:<25} | {name:<30} | {ts:<20} | {stato}"
                 if filter_text.lower() in entry.lower():
                     listbox.insert(tk.END, entry)
 
