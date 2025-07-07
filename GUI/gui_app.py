@@ -74,8 +74,8 @@ class PrivacyWatcherGUI:
                 self.text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
 
         # Salvataggio automatico della scansione nel database
-        import datetime
-        from db.database import salva_scansione, recupera_report, recupera_contenuto_report
+        # import datetime
+        # from db.database import salva_scansione, recupera_report, recupera_contenuto_report
  
 
         timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
