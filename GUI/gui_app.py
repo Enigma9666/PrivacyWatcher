@@ -129,9 +129,10 @@ class PrivacyWatcherGUI:
 
         def populate_list(filter_text=""):
             listbox.delete(0, tk.END)
-            for ts, name, stato in records:
+            for ts, name, stato, percorso in records:
                 short_path = os.path.basename(path)
-                entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
+                # entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
+                entry = f"{percorso:<25} | {name:<30} | {ts} | {stato}"
                 if filter_text.lower() in entry.lower():
                     listbox.insert(tk.END, entry)
 
