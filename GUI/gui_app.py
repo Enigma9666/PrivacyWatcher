@@ -132,7 +132,7 @@ class PrivacyWatcherGUI:
             for ts, name, stato, percorso in records:
                 short_path = os.path.basename(percorso)
                 # entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
-                entry = f"{percorso:<25} | {name:<30} | {ts} | {stato}"
+                entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
                 if filter_text.lower() in entry.lower():
                     listbox.insert(tk.END, entry)
 
