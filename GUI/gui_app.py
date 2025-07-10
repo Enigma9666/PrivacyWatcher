@@ -124,7 +124,7 @@ class PrivacyWatcherGUI:
         search_entry = tk.Entry(top_frame, textvariable=search_var)
         search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
-        tree = ttk.Treeview(db_window, columns=("Percorso", "Nome", "Data", "Stato"), show="headings")
+        tree = ttk.Treeview(db_win, columns=("Percorso", "Nome", "Data", "Stato"), show="headings")
         tree.heading("Percorso", text="Percorso")
         tree.heading("Nome", text="Nome Report")
         tree.heading("Data", text="Data")
