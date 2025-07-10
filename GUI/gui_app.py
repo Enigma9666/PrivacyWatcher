@@ -1,6 +1,5 @@
-from tkinter import ttk
-import tkinter as ttk
 import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog, messagebox, scrolledtext
 import os
 from scanner.scanner import scan_file, scan_directory
