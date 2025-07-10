@@ -1,3 +1,4 @@
+from tkinter import ttk
 import tkinter as ttk
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
@@ -124,17 +125,26 @@ class PrivacyWatcherGUI:
         search_entry = tk.Entry(top_frame, textvariable=search_var)
         search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
-        listbox = tk.Listbox(db_win, width=130, font=("Courier", 10))
-        listbox.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        tree = ttk.Treeview(db_window, columns=("Percorso", "Nome", "Data", "Stato"), show="headings")
+        tree.heading("Percorso", text="Percorso")
+        tree.heading("Nome", text="Nome Report")
+        tree.heading("Data", text="Data")
+        tree.heading("Stato", text="Stato")
+
+        tree.column("Percorso", width=200)
+        tree.column("Nome", width=200)
+        tree.column("Data", width=150)
+        tree.column("Stato", width=100)
+
+        tree.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+
 
         def populate_list(filter_text=""):
-            listbox.delete(0, tk.END)
+            tree.delete(*tree.get_children())
             for ts, name, stato, percorso in records:
                 short_path = os.path.basename(percorso)
                 # entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
-                entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
-                if filter_text.lower() in entry.lower():
-                    listbox.insert(tk.END, entry)
+                tree.insert("", tk.END, values=(short_path, name, ts, stato))
 
 
         populate_list()
