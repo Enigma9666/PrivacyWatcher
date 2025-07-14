@@ -194,36 +194,47 @@ class PrivacyWatcherGUI:
         end_date.pack(side=tk.LEFT, padx=(0,15))
 
         def apply_date_filter():
-            # Prendo le date e converto in datetime
-            dt_start = datetime.strptime(start_date.get(), "%m/%d/%y")
-            dt_end = datetime.strptime(end_date.get(), "%m/%d/%y")
-            if dt_start > dt_end:
-                messagebox.showerror("Errore", "La data di inizio deve essere precedente alla data di fine.")
+            from datetime import datetime
+        
+            try:
+                dt_start = datetime.strptime(start_date.get(), "%m/%d/%y")
+                dt_end = datetime.strptime(end_date.get(), "%m/%d/%y")
+            except ValueError:
+                messagebox.showerror("Errore", "Formato data non valido.")
                 return
         
-            # Filtro i record in base al range
+            if dt_start > dt_end:
+                messagebox.showerror("Errore", "La data di inizio deve essere precedente a quella di fine.")
+                return
+        
             filtered = []
-            for ts, name, stato in records:
-                # ts è stringa, converto in datetime
-                dt_record = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
-                if dt_start <= dt_record <= dt_end:
-                    filtered.append((ts, name, stato))
+            for ts, name, stato, percorso in records:
+                try:
+                    ts_dt = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                    if dt_start <= ts_dt <= dt_end:
+                        filtered.append((ts, name, stato, percorso))
+                except ValueError:
+                    continue  # Ignora i record con timestamp malformati
         
             populate_list(filtered)
+
 
         filter_btn = ttk.Button(filter_frame, text="Applica filtro", command=apply_date_filter)
         filter_btn.pack(side=tk.LEFT)
 
         # --- modifica la funzione populate_list per accettare lista di record come argomento ---
-        def populate_list(filter_text=""):
+        def populate_list(filtered_records=None, filter_text=""):
             tree.delete(*tree.get_children())
-            for ts, name, stato, percorso in records:
+            if filtered_records is None:
+                filtered_records = records
+            for ts, name, stato, percorso in filtered_records:
                 short_path = os.path.basename(percorso)
                 if filter_text.lower() in f"{short_path} {name} {ts} {stato}".lower():
                     tree.insert("", tk.END, values=(short_path, name, ts, stato))
 
         populate_list()
 
+        
 
 
 
