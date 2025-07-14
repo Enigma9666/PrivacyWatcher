@@ -136,6 +136,7 @@ class PrivacyWatcherGUI:
         tree.column("Stato", width=100)
 
         tree.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+        tree.bind("<<TreeviewSelect>>", show_report)
 
 
         def populate_list(filter_text=""):
@@ -154,30 +155,31 @@ class PrivacyWatcherGUI:
 
         def show_report(event):
             selected_item = tree.selection()
-            if selected_item:
-                item_values = tree.item(selected_item, 'values')
-                report_name = item_values[1]  # Il nome del report è nella seconda colonna
+            if not selected_item:
+                return
         
-                results = recupera_contenuto_report(report_name)
-                if results is None:
-                    messagebox.showerror("Errore", "Report non trovato nel database.")
-                    return
+            values = tree.item(selected_item[0], "values")
+            report_name = values[1]  # nome report (es. Report_2025.07.10-12.52.17.txt)
         
-                view_win = tk.Toplevel(db_win)
-                view_win.title(f"Contenuto - {report_name}")
-                view_win.geometry("700x500")
+            results = recupera_contenuto_report(report_name)
+            if results is None:
+                messagebox.showerror("Errore", "Report non trovato nel database.")
+                return
         
-                text_area = scrolledtext.ScrolledText(view_win, wrap=tk.WORD)
-                text_area.pack(fill=tk.BOTH, expand=True)
+            view_win = tk.Toplevel(db_win)
+            view_win.title(f"Contenuto - {report_name}")
+            view_win.geometry("700x500")
         
-                for item in results:
-                    text_area.insert(tk.END, f"📄 File: {item['file']}\n")
-                    text_area.insert(tk.END, f"🔢 Riga: {item['line']}\n")
-                    text_area.insert(tk.END, f"🔍 Contenuto: {item['content']}\n")
-                    text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
+            text_area = scrolledtext.ScrolledText(view_win, wrap=tk.WORD)
+            text_area.pack(fill=tk.BOTH, expand=True)
         
-                text_area.config(state=tk.DISABLED)
-
+            for item in results:
+                text_area.insert(tk.END, f"📄 File: {item['file']}\n")
+                text_area.insert(tk.END, f"🔢 Riga: {item['line']}\n")
+                text_area.insert(tk.END, f"🔍 Contenuto: {item['content']}\n")
+                text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
+        
+            text_area.config(state=tk.DISABLED)
 
         tree.bind("<<TreeviewSelect>>", show_report)
         filter_frame = ttk.Frame(db_win)
