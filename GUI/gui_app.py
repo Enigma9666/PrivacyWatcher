@@ -153,33 +153,33 @@ class PrivacyWatcherGUI:
         search_var.trace_add("write", on_search)
 
         def show_report(event):
-            selection = listbox.curselection()
-            if selection:
-                idx = selection[0]
-                selected = listbox.get(idx)
-                report_name = selected.split("|")[1].strip()
-
+            selected_item = tree.selection()
+            if selected_item:
+                item_values = tree.item(selected_item, 'values')
+                report_name = item_values[1]  # Il nome del report è nella seconda colonna
+        
                 results = recupera_contenuto_report(report_name)
                 if results is None:
                     messagebox.showerror("Errore", "Report non trovato nel database.")
                     return
-
+        
                 view_win = tk.Toplevel(db_win)
                 view_win.title(f"Contenuto - {report_name}")
                 view_win.geometry("700x500")
-
+        
                 text_area = scrolledtext.ScrolledText(view_win, wrap=tk.WORD)
                 text_area.pack(fill=tk.BOTH, expand=True)
-
+        
                 for item in results:
                     text_area.insert(tk.END, f"📄 File: {item['file']}\n")
                     text_area.insert(tk.END, f"🔢 Riga: {item['line']}\n")
                     text_area.insert(tk.END, f"🔍 Contenuto: {item['content']}\n")
                     text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
-
+        
                 text_area.config(state=tk.DISABLED)
 
-        listbox.bind("<<ListboxSelect>>", show_report)
+
+        tree.bind("<<TreeviewSelect>>", show_report)
         filter_frame = ttk.Frame(db_win)
         filter_frame.pack(fill=tk.X, padx=10, pady=5)
 
