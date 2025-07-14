@@ -136,7 +136,7 @@ class PrivacyWatcherGUI:
         tree.column("Stato", width=100)
 
         tree.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
-        tree.bind("<<TreeviewSelect>>", show_report)
+        # tree.bind("<<TreeviewSelect>>", show_report)
 
 
         def populate_list(filter_text=""):
