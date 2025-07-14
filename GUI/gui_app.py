@@ -213,14 +213,12 @@ class PrivacyWatcherGUI:
         filter_btn.pack(side=tk.LEFT)
 
         # --- modifica la funzione populate_list per accettare lista di record come argomento ---
-        def populate_list(filtered_records=None, filter_text=""):
-            listbox.delete(0, tk.END)
-            if filtered_records is None:
-                filtered_records = records
-            for ts, name, stato, percorso in filtered_records:
-                entry = f"{percorso:<25} | {name:<30} | {ts:<20} | {stato}"
-                if filter_text.lower() in entry.lower():
-                    listbox.insert(tk.END, entry)
+        def populate_list(filter_text=""):
+            tree.delete(*tree.get_children())
+            for ts, name, stato, percorso in records:
+                short_path = os.path.basename(percorso)
+                if filter_text.lower() in f"{short_path} {name} {ts} {stato}".lower():
+                    tree.insert("", tk.END, values=(short_path, name, ts, stato))
 
         populate_list()
 
