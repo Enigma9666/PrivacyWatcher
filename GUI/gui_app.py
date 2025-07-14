@@ -215,12 +215,33 @@ class PrivacyWatcherGUI:
                         filtered.append((ts, name, stato, percorso))
                 except ValueError:
                     continue  # Ignora i record con timestamp malformati
-        
             populate_list(filtered)
+        def aggiorna_dati():
+            nonlocal records
+            records = recupera_report()
+            populate_list()
+    
+        def elimina_report_selezionato():
+            selected = tree.selection()
+            if not selected:
+                messagebox.showwarning("Attenzione", "Seleziona un report da eliminare.")
+                return
+    
+            item = tree.item(selected[0])
+            report_name = item['values'][1]
+    
+            conferma = messagebox.askyesno("Conferma eliminazione", f"Vuoi davvero eliminare il report '{report_name}'?")
+            if conferma:
+                elimina_report(report_name)
+                messagebox.showinfo("Eliminato", f"Il report '{report_name}' è stato eliminato.")
+                aggiorna_dati()
 
 
         filter_btn = ttk.Button(filter_frame, text="Applica filtro", command=apply_date_filter)
         filter_btn.pack(side=tk.LEFT)
+        delete_btn = tk.Button(db_win, text="Elimina report selezionato", bg="red", fg="white", command=elimina_report_selezionato)
+        delete_btn.pack(pady=5)
+
 
         # --- modifica la funzione populate_list per accettare lista di record come argomento ---
         def populate_list(filtered_records=None, filter_text=""):
