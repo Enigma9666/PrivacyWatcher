@@ -69,9 +69,7 @@ def recupera_contenuto_report(report_name: str):
             return json.loads(result[0])
         return None
 def elimina_report(report_name):
-    conn = sqlite3.connect("db/reports.db")
-    c = conn.cursor()
-    c.execute("DELETE FROM scansioni WHERE report_name = ?", (report_name,))
-    c.execute("DELETE FROM risultati WHERE report_nome = ?", (report_name,))
-    conn.commit()
-    conn.close()
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("DELETE FROM scansioni WHERE report_name = ?", (report_name,))
+        conn.commit()
