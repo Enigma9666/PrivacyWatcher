@@ -4,9 +4,10 @@ from tkinter import filedialog, messagebox, scrolledtext
 import os
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
-from db.database import salva_scansione, recupera_report, recupera_contenuto_report
+from db.database import salva_scansione, recupera_report, recupera_contenuto_report, elimina_report
 import datetime
 from tkcalendar import DateEntry
+
 
 class PrivacyWatcherGUI:
     def __init__(self, root):
