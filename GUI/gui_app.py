@@ -137,7 +137,6 @@ class PrivacyWatcherGUI:
         tree.column("Stato", width=100)
 
         tree.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
-        # tree.bind("<<TreeviewSelect>>", show_report)
 
 
         def populate_list(filter_text=""):
@@ -155,12 +154,12 @@ class PrivacyWatcherGUI:
         search_var.trace_add("write", on_search)
 
         def show_report(event):
-            selected_item = tree.selection()
-            if not selected_item:
+            item_id = tree.identify_row(event.y)  # Ottiene l'ID della riga cliccata
+            if not item_id:
                 return
         
-            values = tree.item(selected_item[0], "values")
-            report_name = values[1]  # nome report (es. Report_2025.07.10-12.52.17.txt)
+            values = tree.item(item_id, "values")
+            report_name = values[1]  # nome del report (es. Report_2025...)
         
             results = recupera_contenuto_report(report_name)
             if results is None:
@@ -182,7 +181,8 @@ class PrivacyWatcherGUI:
         
             text_area.config(state=tk.DISABLED)
 
-        tree.bind("<<TreeviewSelect>>", show_report)
+        #tree.bind("<<TreeviewSelect>>", show_report)
+        tree.bind("<Double-1>", show_report)
         filter_frame = ttk.Frame(db_win)
         filter_frame.pack(fill=tk.X, padx=10, pady=5)
 
