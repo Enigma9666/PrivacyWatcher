@@ -6,6 +6,9 @@ from report.report_generator import generate_txt_report
 
 # 👇 Import della GUI
 from GUI.gui_app import launch_gui
+from db.database import inizializza_db
+
+inizializza_db()  # Inizializza il DB all'avvio
 
 def check_environment():
     if os.name != 'posix':
