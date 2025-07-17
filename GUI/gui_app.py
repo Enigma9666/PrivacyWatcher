@@ -117,11 +117,9 @@ class PrivacyWatcherGUI:
             del self.db_win
     
         self.db_win.protocol("WM_DELETE_WINDOW", on_close)
-        db_win.title("Storico Report")
-        db_win.geometry("900x600")
 
         # Sezione ricerca
-        top_frame = tb.Frame(db_win)
+        top_frame = tb.Frame(self.db_win)
         top_frame.pack(fill="x", padx=10, pady=5)
 
         search_var = tb.StringVar()
@@ -129,7 +127,7 @@ class PrivacyWatcherGUI:
         search_entry = tb.Entry(top_frame, textvariable=search_var)
         search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
-        tree = tb.Treeview(db_win, columns=("Percorso", "Nome", "Data", "Stato"), show="headings", bootstyle="info")
+        tree = tb.Treeview(self.db_win, columns=("Percorso", "Nome", "Data", "Stato"), show="headings", bootstyle="info")
         for col in ("Percorso", "Nome", "Data", "Stato"):
             tree.heading(col, text=col)
         tree.column("Percorso", width=200)
@@ -151,7 +149,7 @@ class PrivacyWatcherGUI:
                 messagebox.showerror("Errore", "Report non trovato nel database.")
                 return
 
-            view_win = tb.Toplevel(db_win)
+            view_win = tb.Toplevel(self.db_win)
             view_win.title(f"Contenuto - {report_name}")
             view_win.geometry("700x500")
 
@@ -168,7 +166,7 @@ class PrivacyWatcherGUI:
         tree.bind("<Double-1>", show_report)
 
         # Filtro per date
-        filter_frame = tk.Frame(db_win)
+        filter_frame = tk.Frame(self.db_win)
         filter_frame.pack(fill=tk.X, padx=10, pady=5)
         
         tk.Label(filter_frame, text="Data inizio:").pack(side=tk.LEFT, padx=(0, 5))
@@ -193,7 +191,7 @@ class PrivacyWatcherGUI:
                 return
 
             filtered = []
-            for ts, name, stato, percorso in records:
+            for ts, name, stato, percorso in self.records:
                 try:
                     ts_dt = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
                     if dt_start <= ts_dt <= dt_end:
@@ -220,7 +218,7 @@ class PrivacyWatcherGUI:
                 aggiorna_dati()
 
         tb.Button(filter_frame, text="Applica filtro", command=apply_date_filter, bootstyle="info").pack(side='left', padx=10)
-        tb.Button(db_win, text="Elimina report selezionato", command=elimina_report_selezionato, bootstyle="danger").pack(pady=5)
+        tb.Button(self.db_win, text="Elimina report selezionato", command=elimina_report_selezionato, bootstyle="danger").pack(pady=5)
 
         def populate_list(filtered_records=None, filter_text=""):
             tree.delete(*tree.get_children())
