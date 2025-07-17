@@ -1,46 +1,46 @@
-import tkinter as tk
-from tkinter import ttk
+import ttkbootstrap as tb
+from ttkbootstrap.constants import *
 from tkinter import filedialog, messagebox, scrolledtext
+from tkcalendar import DateEntry
 import os
+import datetime
+
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
 from db.database import salva_scansione, recupera_report, recupera_contenuto_report, elimina_report
-import datetime
-from tkcalendar import DateEntry
 
 
 class PrivacyWatcherGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("PrivacyWatcher - GUI")
-        self.root.geometry("700x500")
+        self.root.geometry("1000x700")
+        self.root.minsize(800, 600)
 
-        self.path = tk.StringVar()
+        self.path = tb.StringVar()
         self.results = []
 
         self.create_widgets()
 
     def create_widgets(self):
-        # Frame per il percorso
-        path_frame = tk.Frame(self.root)
-        path_frame.pack(fill='x', padx=10, pady=5)
+        # Frame superiore per il percorso
+        path_frame = tb.Frame(self.root)
+        path_frame.pack(fill='x', padx=20, pady=10)
 
-        tk.Entry(path_frame, textvariable=self.path, width=60).pack(side='left', padx=5)
-        tk.Button(path_frame, text="Sfoglia", command=self.browse_path).pack(side='left')
+        tb.Entry(path_frame, textvariable=self.path, width=70).pack(side='left', expand=True, fill='x', padx=5)
+        tb.Button(path_frame, text="Sfoglia", command=self.browse_path, bootstyle="secondary").pack(side='left', padx=5)
 
         # Frame per i pulsanti
-        button_frame = tk.Frame(self.root)
+        button_frame = tb.Frame(self.root)
         button_frame.pack(pady=10)
 
-        tk.Button(button_frame, text="Avvia scannerizzazione", command=self.run_scan, bg="#4CAF50", fg="white").pack(side='left', padx=5)
-        tk.Button(button_frame, text="Esporta Report", command=self.export_report).pack(side='left', padx=5)
-        tk.Button(button_frame, text="Database", command=self.open_database_window).pack(side='left', padx=5)
+        tb.Button(button_frame, text="Avvia scannerizzazione", command=self.run_scan, bootstyle="success").pack(side='left', padx=5)
+        tb.Button(button_frame, text="Esporta Report", command=self.export_report, bootstyle="info").pack(side='left', padx=5)
+        tb.Button(button_frame, text="Database", command=self.open_database_window, bootstyle="primary").pack(side='left', padx=5)
 
         # Area di testo scrollabile
-        self.text_area = scrolledtext.ScrolledText(self.root, wrap=tk.WORD, width=80, height=20)
-        self.text_area.pack(padx=10, pady=5)
-
-
+        self.text_area = scrolledtext.ScrolledText(self.root, wrap='word', font=("Courier New", 10))
+        self.text_area.pack(fill='both', expand=True, padx=20, pady=10)
 
     def browse_path(self):
         path = filedialog.askopenfilename()
@@ -50,7 +50,7 @@ class PrivacyWatcherGUI:
             self.path.set(path)
 
     def run_scan(self):
-        self.text_area.delete(1.0, tk.END)
+        self.text_area.delete(1.0, tb.END)
         path = self.path.get()
 
         if not path:
@@ -66,18 +66,13 @@ class PrivacyWatcherGUI:
             return
 
         if not self.results:
-            self.text_area.insert(tk.END, "✅ Nessun dato sensibile rilevato.")
+            self.text_area.insert(tb.END, "✅ Nessun dato sensibile rilevato.")
         else:
             for item in self.results:
-                self.text_area.insert(tk.END, f"📄 File: {item['file']}\n")
-                self.text_area.insert(tk.END, f"🔢 Riga: {item['line']}\n")
-                self.text_area.insert(tk.END, f"🔍 Contenuto: {item['content']}\n")
-                self.text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
-
-        # Salvataggio automatico della scansione nel database
-        # import datetime
-        # from db.database import salva_scansione, recupera_report, recupera_contenuto_report
- 
+                self.text_area.insert(tb.END, f"📄 File: {item['file']}\n")
+                self.text_area.insert(tb.END, f"🔢 Riga: {item['line']}\n")
+                self.text_area.insert(tb.END, f"🔍 Contenuto: {item['content']}\n")
+                self.text_area.insert(tb.END, f"   → {item['data_type']}: {item['match']}\n\n")
 
         timestamp = datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S")
         report_name = f"Report_{timestamp}.txt"
@@ -101,113 +96,89 @@ class PrivacyWatcherGUI:
         filepath = os.path.join("reports", filename)
 
         generate_txt_report(structured, self.path.get(), filepath)
-
-        # Salva anche nel database
-        """salva_scansione(self.path.get(), self.results, filename)"""
         salva_scansione(self.path.get(), self.results, filename, "Esportato")
-
 
         messagebox.showinfo("Report generato", f"Report salvato in {filename}")
 
     def open_database_window(self):
-        records = recupera_report()  # (timestamp, report_name)
+        records = recupera_report()
 
-        db_win = tk.Toplevel(self.root)
+        db_win = tb.Toplevel(self.root)
         db_win.title("Storico Report")
-        db_win.geometry("700x500")
+        db_win.geometry("900x600")
 
-        # ───── Cerca per nome o data
-        top_frame = tk.Frame(db_win)
+        # Sezione ricerca
+        top_frame = tb.Frame(db_win)
         top_frame.pack(fill="x", padx=10, pady=5)
 
-        search_var = tk.StringVar()
-        tk.Label(top_frame, text="Cerca:").pack(side="left", padx=5)
-        search_entry = tk.Entry(top_frame, textvariable=search_var)
+        search_var = tb.StringVar()
+        tb.Label(top_frame, text="Cerca:").pack(side="left", padx=5)
+        search_entry = tb.Entry(top_frame, textvariable=search_var)
         search_entry.pack(side="left", fill="x", expand=True, padx=5)
 
-        tree = ttk.Treeview(db_win, columns=("Percorso", "Nome", "Data", "Stato"), show="headings")
-        tree.heading("Percorso", text="Percorso")
-        tree.heading("Nome", text="Nome Report")
-        tree.heading("Data", text="Data")
-        tree.heading("Stato", text="Stato")
-
+        tree = tb.Treeview(db_win, columns=("Percorso", "Nome", "Data", "Stato"), show="headings", bootstyle="info")
+        for col in ("Percorso", "Nome", "Data", "Stato"):
+            tree.heading(col, text=col)
         tree.column("Percorso", width=200)
         tree.column("Nome", width=200)
-        tree.column("Data", width=150)
+        tree.column("Data", width=180)
         tree.column("Stato", width=100)
+        tree.pack(padx=10, pady=10, fill='both', expand=True)
 
-        tree.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
-
-
-        def populate_list(filter_text=""):
-            tree.delete(*tree.get_children())
-            for ts, name, stato, percorso in records:
-                short_path = os.path.basename(percorso)
-                # entry = f"{short_path:<25} | {name:<30} | {ts:<20} | {stato}"
-                tree.insert("", tk.END, values=(short_path, name, ts, stato))
-
-
-        populate_list()
-
-        def on_search(*args):
-            populate_list(search_var.get())
-        search_var.trace_add("write", on_search)
-
+        # Selezione e apertura report
         def show_report(event):
-            item_id = tree.identify_row(event.y)  # Ottiene l'ID della riga cliccata
+            item_id = tree.identify_row(event.y)
             if not item_id:
                 return
-        
+
             values = tree.item(item_id, "values")
-            report_name = values[1]  # nome del report (es. Report_2025...)
-        
+            report_name = values[1]
             results = recupera_contenuto_report(report_name)
             if results is None:
                 messagebox.showerror("Errore", "Report non trovato nel database.")
                 return
-        
-            view_win = tk.Toplevel(db_win)
+
+            view_win = tb.Toplevel(db_win)
             view_win.title(f"Contenuto - {report_name}")
             view_win.geometry("700x500")
-        
-            text_area = scrolledtext.ScrolledText(view_win, wrap=tk.WORD)
-            text_area.pack(fill=tk.BOTH, expand=True)
-        
+
+            text_area = scrolledtext.ScrolledText(view_win, wrap='word')
+            text_area.pack(fill='both', expand=True)
+
             for item in results:
-                text_area.insert(tk.END, f"📄 File: {item['file']}\n")
-                text_area.insert(tk.END, f"🔢 Riga: {item['line']}\n")
-                text_area.insert(tk.END, f"🔍 Contenuto: {item['content']}\n")
-                text_area.insert(tk.END, f"   → {item['data_type']}: {item['match']}\n\n")
-        
-            text_area.config(state=tk.DISABLED)
+                text_area.insert(tb.END, f"📄 File: {item['file']}\n")
+                text_area.insert(tb.END, f"🔢 Riga: {item['line']}\n")
+                text_area.insert(tb.END, f"🔍 Contenuto: {item['content']}\n")
+                text_area.insert(tb.END, f"   → {item['data_type']}: {item['match']}\n\n")
+            text_area.config(state='disabled')
 
-        #tree.bind("<<TreeviewSelect>>", show_report)
         tree.bind("<Double-1>", show_report)
-        filter_frame = ttk.Frame(db_win)
-        filter_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(filter_frame, text="Data inizio:").pack(side=tk.LEFT, padx=(0,5))
+        # Filtro per date
+        filter_frame = tb.Frame(db_win)
+        filter_frame.pack(fill='x', padx=10, pady=5)
+
+        tb.Label(filter_frame, text="Data inizio:").pack(side="left", padx=(0,5))
         start_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
-        start_date.pack(side=tk.LEFT, padx=(0,15))
+        start_date.pack(side="left", padx=(0,15))
 
-        ttk.Label(filter_frame, text="Data fine:").pack(side=tk.LEFT, padx=(0,5))
+        tb.Label(filter_frame, text="Data fine:").pack(side="left", padx=(0,5))
         end_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
-        end_date.pack(side=tk.LEFT, padx=(0,15))
+        end_date.pack(side="left", padx=(0,15))
 
         def apply_date_filter():
             from datetime import datetime
-        
             try:
                 dt_start = datetime.strptime(start_date.get(), "%m/%d/%y")
                 dt_end = datetime.strptime(end_date.get(), "%m/%d/%y")
             except ValueError:
                 messagebox.showerror("Errore", "Formato data non valido.")
                 return
-        
+
             if dt_start > dt_end:
                 messagebox.showerror("Errore", "La data di inizio deve essere precedente a quella di fine.")
                 return
-        
+
             filtered = []
             for ts, name, stato, percorso in records:
                 try:
@@ -215,52 +186,43 @@ class PrivacyWatcherGUI:
                     if dt_start <= ts_dt <= dt_end:
                         filtered.append((ts, name, stato, percorso))
                 except ValueError:
-                    continue  # Ignora i record con timestamp malformati
+                    continue
             populate_list(filtered)
+
         def aggiorna_dati():
             nonlocal records
             records = recupera_report()
             populate_list()
-    
+
         def elimina_report_selezionato():
             selected = tree.selection()
             if not selected:
                 messagebox.showwarning("Attenzione", "Seleziona un report da eliminare.")
                 return
-    
             item = tree.item(selected[0])
             report_name = item['values'][1]
-    
             conferma = messagebox.askyesno("Conferma eliminazione", f"Vuoi davvero eliminare il report '{report_name}'?")
             if conferma:
                 elimina_report(report_name)
                 messagebox.showinfo("Eliminato", f"Il report '{report_name}' è stato eliminato.")
                 aggiorna_dati()
 
+        tb.Button(filter_frame, text="Applica filtro", command=apply_date_filter, bootstyle="info").pack(side='left', padx=10)
+        tb.Button(db_win, text="Elimina report selezionato", command=elimina_report_selezionato, bootstyle="danger").pack(pady=5)
 
-        filter_btn = ttk.Button(filter_frame, text="Applica filtro", command=apply_date_filter)
-        filter_btn.pack(side=tk.LEFT)
-        delete_btn = tk.Button(db_win, text="Elimina report selezionato", bg="red", fg="white", command=elimina_report_selezionato)
-        delete_btn.pack(pady=5)
-
-
-        # --- modifica la funzione populate_list per accettare lista di record come argomento ---
         def populate_list(filtered_records=None, filter_text=""):
             tree.delete(*tree.get_children())
-            if filtered_records is None:
-                filtered_records = records
-            for ts, name, stato, percorso in filtered_records:
+            data = filtered_records if filtered_records is not None else records
+            for ts, name, stato, percorso in data:
                 short_path = os.path.basename(percorso)
                 if filter_text.lower() in f"{short_path} {name} {ts} {stato}".lower():
-                    tree.insert("", tk.END, values=(short_path, name, ts, stato))
+                    tree.insert("", tb.END, values=(short_path, name, ts, stato))
 
+        search_var.trace_add("write", lambda *args: populate_list(filter_text=search_var.get()))
         populate_list()
-
-        
-
 
 
 def launch_gui():
-    root = tk.Tk()
+    root = tb.Window(themename="darkly")  # puoi cambiare in "flatly", "cosmo", ecc.
     app = PrivacyWatcherGUI(root)
     root.mainloop()
