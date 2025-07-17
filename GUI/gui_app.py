@@ -176,14 +176,15 @@ class PrivacyWatcherGUI:
         label_start = tk.Label(filter_frame, text="Data inizio:")
         label_start.pack(side='left', padx=(0, 5))
         
-        start_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
+        start_date = tb.Entry(filter_frame, width=12)
         start_date.pack(side='left', padx=(0, 15))
         
         label_end = tk.Label(filter_frame, text="Data fine:")
         label_end.pack(side='left', padx=(0, 5))
         
-        end_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
+        end_date = tb.Entry(filter_frame, width=12)
         end_date.pack(side='left', padx=(0, 15))
+
 
         def apply_date_filter():
             from datetime import datetime
