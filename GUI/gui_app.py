@@ -1,13 +1,14 @@
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 from tkinter import filedialog, messagebox, scrolledtext
+import tkinter as tk
+from tkinter import ttk
 from tkcalendar import DateEntry
 import os
 import datetime
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
 from db.database import salva_scansione, recupera_report, recupera_contenuto_report, elimina_report
-import tkinter as tk
 
 class PrivacyWatcherGUI:
     def __init__(self, root):
@@ -100,9 +101,22 @@ class PrivacyWatcherGUI:
         messagebox.showinfo("Report generato", f"Report salvato in {filename}")
 
     def open_database_window(self):
-        records = recupera_report()
-
-        db_win = tb.Toplevel(self.root)
+        if hasattr(self, 'db_win') and self.db_win.winfo_exists():
+            self.db_win.lift()
+            return
+    
+        self.records = recupera_report()
+    
+        self.db_win = tb.Toplevel(self.root)
+        self.db_win.focus_force()
+        self.db_win.title("Storico Report")
+        self.db_win.geometry("900x600")
+    
+        def on_close():
+            self.db_win.destroy()
+            del self.db_win
+    
+        self.db_win.protocol("WM_DELETE_WINDOW", on_close)
         db_win.title("Storico Report")
         db_win.geometry("900x600")
 
@@ -189,8 +203,7 @@ class PrivacyWatcherGUI:
             populate_list(filtered)
 
         def aggiorna_dati():
-            nonlocal records
-            records = recupera_report()
+            self.records = recupera_report()
             populate_list()
 
         def elimina_report_selezionato():
@@ -211,7 +224,7 @@ class PrivacyWatcherGUI:
 
         def populate_list(filtered_records=None, filter_text=""):
             tree.delete(*tree.get_children())
-            data = filtered_records if filtered_records is not None else records
+            data = filtered_records if filtered_records is not None else self.records
             for ts, name, stato, percorso in data:
                 short_path = os.path.basename(percorso)
                 if filter_text.lower() in f"{short_path} {name} {ts} {stato}".lower():
