@@ -4,7 +4,7 @@ from tkinter import filedialog, messagebox, scrolledtext
 from tkcalendar import DateEntry
 import os
 import datetime
-
+from GUI.privacywatcher_gui import PrivacyWatcherGUI
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
 from db.database import salva_scansione, recupera_report, recupera_contenuto_report, elimina_report
@@ -223,6 +223,18 @@ class PrivacyWatcherGUI:
 
 
 def launch_gui():
-    root = tb.Window(themename="darkly")  # puoi cambiare in "flatly", "cosmo", ecc.
-    app = PrivacyWatcherGUI(root)
+    root = tb.Window(themename="darkly")
+    root.title("PrivacyWatcher")
+    root.geometry("1000x700")  # o qualsiasi dimensione base
+
+    # Callback sicuro per chiusura finestra
+    def on_close():
+        print("Uscita dalla GUI richiesta...")
+        root.destroy()
+
+    root.protocol("WM_DELETE_WINDOW", on_close)
+
+    # Avvia l'interfaccia
+    PrivacyWatcherGUI(root)  # ATTENZIONE: questa classe NON deve richiamare `Tk()`
+
     root.mainloop()
