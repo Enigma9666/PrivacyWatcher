@@ -167,15 +167,19 @@ class PrivacyWatcherGUI:
 
         # Filtro per date
         filter_frame = tk.Frame(self.db_win)
-        filter_frame.pack(fill=tk.X, padx=10, pady=5)
+        filter_frame.pack(fill='x', padx=10, pady=5)
         
-        tk.Label(filter_frame, text="Data inizio:").pack(side=tk.LEFT, padx=(0, 5))
-        start_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
-        start_date.pack(side=tk.LEFT, padx=(0, 15))
+        label_start = tk.Label(filter_frame, text="Data inizio:")
+        label_start.pack(side='left', padx=(0, 5))
         
-        tk.Label(filter_frame, text="Data fine:").pack(side=tk.LEFT, padx=(0, 5))
-        end_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
-        end_date.pack(side=tk.LEFT, padx=(0, 15))
+        start_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
+        start_date.pack(side='left', padx=(0, 15))
+        
+        label_end = tk.Label(filter_frame, text="Data fine:")
+        label_end.pack(side='left', padx=(0, 5))
+        
+        end_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
+        end_date.pack(side='left', padx=(0, 15))
 
         def apply_date_filter():
             from datetime import datetime
