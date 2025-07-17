@@ -1,16 +1,23 @@
-import sqlite3
-import os
-import json
-from datetime import datetime
+import sqlite3       # Modulo per gestire database SQLite
+import os            # Per operazioni su filesystem (cartelle, percorsi)
+import json          # Per serializzare/desserializzare dati JSON
+from datetime import datetime  # Per gestire date e orari
 
-# Percorso del database
+# Percorso del file database, dentro la cartella "data"
 DB_PATH = os.path.join("data", "logs.db")
 
 def inizializza_db():
-    """Crea il database e la tabella scansioni, se non esistono."""
+    """Crea il database e la tabella scansioni se non esistono."""
+    # Crea la cartella 'data' se non esiste già
     os.makedirs("data", exist_ok=True)
+    
+    # Connessione al database SQLite (il file viene creato se non esiste)
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
+        
+        # Crea la tabella 'scansioni' se non esiste, con colonne per:
+        # id (chiave primaria autoincrement), timestamp, nome report, directory,
+        # risultati (testo JSON), stato, percorso (stringhe)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS scansioni (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,30 +29,38 @@ def inizializza_db():
                 percorso TEXT
             )
         """)
-        # Se la colonna "stato" non esiste (DB già creato), la aggiunge
+        
+        # Prova ad aggiungere la colonna "stato" se non esiste (per retrocompatibilità)
         try:
             cursor.execute("ALTER TABLE scansioni ADD COLUMN stato TEXT")
         except sqlite3.OperationalError:
-            pass  # La colonna esiste già, ignora errore
-        conn.commit()
+            # Se la colonna esiste già, ignora l'errore
+            pass
+        
+        conn.commit()  # Salva le modifiche nel DB
 
+# Chiama la funzione per assicurarsi che il DB e la tabella siano pronti
 inizializza_db()
 
 def salva_scansione(directory: str, risultati: list, report_name: str, stato: str):
     """Salva una nuova scansione nel database."""
+    # Ottieni timestamp corrente in formato leggibile
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Converte la lista di risultati in una stringa JSON indentata
     risultati_json = json.dumps(risultati, indent=2)
 
+    # Connessione al DB e inserimento di un nuovo record nella tabella scansioni
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO scansioni (timestamp, report_name, directory, risultati, stato, percorso)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (timestamp, report_name, directory, risultati_json, stato, directory))
-        conn.commit()
+        conn.commit()  # Conferma inserimento
 
 def recupera_report():
-    """Restituisce lista di tuple: (timestamp, report_name, stato, percorso)"""
+    """Restituisce la lista dei report (timestamp, nome, stato, percorso), ordinata per data decrescente."""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -53,10 +68,11 @@ def recupera_report():
             FROM scansioni
             ORDER BY timestamp DESC
         """)
+        # Ritorna tutte le righe ottenute come lista di tuple
         return cursor.fetchall()
 
 def recupera_contenuto_report(report_name: str):
-    """Recupera il contenuto JSON di una scansione dal nome del report."""
+    """Recupera i risultati JSON di una scansione dato il nome del report."""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -66,9 +82,13 @@ def recupera_contenuto_report(report_name: str):
         """, (report_name,))
         result = cursor.fetchone()
         if result:
+            # Converte la stringa JSON in struttura dati Python e la restituisce
             return json.loads(result[0])
+        # Se nessun risultato trovato, ritorna None
         return None
+
 def elimina_report(report_name):
+    """Elimina un report dal database dato il nome."""
     with sqlite3.connect(DB_PATH) as conn:
         c = conn.cursor()
         c.execute("DELETE FROM scansioni WHERE report_name = ?", (report_name,))
