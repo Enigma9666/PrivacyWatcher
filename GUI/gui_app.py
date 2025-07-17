@@ -10,7 +10,6 @@ from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
 from db.database import salva_scansione, recupera_report, recupera_contenuto_report, elimina_report
 import tkinter.ttk as classic_ttk
-
 import tkcalendar.dateentry
 tkcalendar.dateentry.ttk.Entry = classic_ttk.Entry
 
