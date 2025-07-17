@@ -7,7 +7,7 @@ import datetime
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
 from db.database import salva_scansione, recupera_report, recupera_contenuto_report, elimina_report
-
+import tkinter as tk
 
 class PrivacyWatcherGUI:
     def __init__(self, root):
@@ -154,16 +154,16 @@ class PrivacyWatcherGUI:
         tree.bind("<Double-1>", show_report)
 
         # Filtro per date
-        filter_frame = tb.Frame(db_win)
-        filter_frame.pack(fill='x', padx=10, pady=5)
-
-        tb.Label(filter_frame, text="Data inizio:").pack(side="left", padx=(0,5))
+        filter_frame = tk.Frame(db_win)
+        filter_frame.pack(fill=tk.X, padx=10, pady=5)
+        
+        tk.Label(filter_frame, text="Data inizio:").pack(side=tk.LEFT, padx=(0, 5))
         start_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
-        start_date.pack(side="left", padx=(0,15))
-
-        tb.Label(filter_frame, text="Data fine:").pack(side="left", padx=(0,5))
+        start_date.pack(side=tk.LEFT, padx=(0, 15))
+        
+        tk.Label(filter_frame, text="Data fine:").pack(side=tk.LEFT, padx=(0, 5))
         end_date = DateEntry(filter_frame, width=12, background='darkblue', foreground='white', borderwidth=2, year=2025)
-        end_date.pack(side="left", padx=(0,15))
+        end_date.pack(side=tk.LEFT, padx=(0, 15))
 
         def apply_date_filter():
             from datetime import datetime
