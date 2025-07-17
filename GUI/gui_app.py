@@ -4,7 +4,6 @@ from tkinter import filedialog, messagebox, scrolledtext
 from tkcalendar import DateEntry
 import os
 import datetime
-from GUI.privacywatcher_gui import PrivacyWatcherGUI
 from scanner.scanner import scan_file, scan_directory
 from report.report_generator import generate_txt_report
 from db.database import salva_scansione, recupera_report, recupera_contenuto_report, elimina_report
