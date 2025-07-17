@@ -1,7 +1,34 @@
 Mario Rossi, email: mario.rossi@example.com
 Telefono: +39 347-1234567
+Cellulare: 3471234567
+Telefono fisso: 06-12345678
 Codice fiscale: RSSMRA85M01H501Z
 Carta di credito: 4111 1111 1111 1111
+Carta Visa: 4532015112830366
+MasterCard: 5555555555554444
+American Express: 378282246310005
 IBAN: IT60X0542811101000000123456
+IBAN Germania: DE89370400440532013000
 password: segreta123
 pwd=superpass
+P.IVA: 12345678901
+Partita IVA: 01234567890
+CAP: 00118
+Codice postale: 20121
+Indirizzo: Via Roma 123, 00100 Roma
+Viale della Repubblica 45
+IP: 192.168.1.1
+Indirizzo IP pubblico: 8.8.8.8
+Numero documento: CI AB1234567
+Passaporto: AA1234567
+Email aziendale: info@company.it
+Telefono internazionale: +1-555-123-4567
+Coordinata bancaria ABI: 01234
+CAB: 56789
+SWIFT: ABCDEFGH
+test@domain.co.uk
+prova.utente@test-domain.com
+Invalid email: not-an-email
+Numero breve: 123 (dovrebbe essere ignorato)
+Falso CF: ABCDEF12G34H567I (checksum errato)
+CF corretto: BNCGPP85D09F205I
