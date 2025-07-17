@@ -242,7 +242,7 @@ class PrivacyWatcherGUI:
 
 
 def launch_gui():
-    root = tb.Window(themename="flatly")
+    root = tb.Window(themename="cosmo")
     root.title("PrivacyWatcher")
     root.geometry("1000x700")  # o qualsiasi dimensione base
 
